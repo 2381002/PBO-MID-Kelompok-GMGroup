@@ -159,7 +159,12 @@ public class SistemManajemenRumahTangga {
         }
     }
 
-
+    private static void viewFamilyMembers() {
+        System.out.println("Daftar Anggota Keluarga:");
+        for (String member : anggotaKeluarga) {
+            System.out.println("- " + member);
+        }
+    }
 
     private static void editFamilyMember() {
         viewFamilyMembers();
@@ -289,7 +294,16 @@ public class SistemManajemenRumahTangga {
         }
     }
 
-
+    private static void viewFinancials() {
+        System.out.println("Pendapatan:");
+        for (String income : pemasukan) {
+            System.out.println("- " + income);
+        }
+        System.out.println("Pengeluaran:");
+        for (String expense : pengeluaran) {
+            System.out.println("- " + expense);
+        }
+    }
 
     // Manajemen jadwal
     private static void manageSchedule() {
@@ -324,7 +338,12 @@ public class SistemManajemenRumahTangga {
         }
     }
 
-
+    private static void viewSchedule() {
+        System.out.println("Daftar Jadwal Kegiatan:");
+        for (String activity : jadwal) {
+            System.out.println("- " + activity);
+        }
+    }
 
     private static void deleteSchedule() {
         viewSchedule();
@@ -373,6 +392,12 @@ public class SistemManajemenRumahTangga {
         }
     }
 
+    private static void viewInventory() {
+        System.out.println("Daftar Inventaris Rumah:");
+        for (String item : inventaris) {
+            System.out.println("- " + item);
+        }
+    }
 
     private static void deleteInventoryItem() {
         viewInventory();
@@ -421,7 +446,12 @@ public class SistemManajemenRumahTangga {
         }
     }
 
-
+    private static void viewRecipes() {
+        System.out.println("Daftar Resep Masakan:");
+        for (String recipe : resep) {
+            System.out.println("- " + recipe);
+        }
+    }
 
     private static void deleteRecipe() {
         viewRecipes();
@@ -481,6 +511,13 @@ public class SistemManajemenRumahTangga {
             System.out.println("Pengingat dihapus: " + removedReminder);
         } else {
             System.out.println("Indeks tidak valid!");
+        }
+    }
+
+    private static void viewReminders() {
+        System.out.println("Daftar Pengingat Tugas:");
+        for (String reminder : pengingat) {
+            System.out.println("- " + reminder);
         }
     }
 }
