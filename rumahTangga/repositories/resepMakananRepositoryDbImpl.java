@@ -1,5 +1,6 @@
 package rumahTangga.repositories;
 
+import org.springframework.stereotype.Component;
 import rumahTangga.config.Database;
 import rumahTangga.entities.anggotaKeluarga;
 import rumahTangga.entities.resepMakanan;
@@ -9,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+@Component
 public class resepMakananRepositoryDbImpl implements resepMakananRepository{
     private Database database;
 
@@ -60,17 +62,13 @@ public class resepMakananRepositoryDbImpl implements resepMakananRepository{
 
     @Override
     public Boolean remove(final Integer id) {
-        ArrayList<resepMakanan> tmp=getAll();
-        Integer idResep = tmp.get(id).getId();
+
         String sqlStatement = "DELETE FROM resep_makanan WHERE id = ?";
         Connection conn = database.getConnection();
-        var dbId = idResep;
-        if (dbId == null) {
-            return false;
-        }
+
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sqlStatement);
-            preparedStatement.setInt(1, dbId);
+            preparedStatement.setInt(1, id);
 
             int rowsEffected = preparedStatement.executeUpdate();
             if (rowsEffected > 0) {

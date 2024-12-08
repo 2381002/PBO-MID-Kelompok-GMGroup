@@ -2,59 +2,71 @@ package rumahTangga.services;
 
 import org.springframework.stereotype.Component;
 import rumahTangga.entities.anggotaKeluarga;
+import rumahTangga.entities.inventarisRumah;
 import rumahTangga.entities.resepMakanan;
 import rumahTangga.repositories.anggotaKeluargaRepository;
 import rumahTangga.repositories.resepMakananRepository;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 @Component
-public class ResepMakananServiceImpl {
+public class ResepMakananServiceImpl implements ResepMakananService{
+
     resepMakananRepository resepMakananRepository;
 
     Scanner input = new Scanner(System.in);
-    public ResepMakananServiceImpl(resepMakananRepository) {
-        this.resepMakananRepository = rumahTangga.repositories.resepMakananRepository;
+    public ResepMakananServiceImpl(rumahTangga.repositories.resepMakananRepository resepMakananRepository)  {
+        this.resepMakananRepository = resepMakananRepository;
     }
 
-    public void addAnggotaKeluarga() {
-        anggotaKeluarga anggota = new anggotaKeluarga();
-        System.out.print("Masukkan nama anggota keluarga:");
+    @Override
+    public void addResepMakanan() {
+        resepMakanan makanan = new resepMakanan();
+        System.out.print("Masukkan nama resep makanan:");
         input.nextLine();
-        anggota.setKeuangan(0);
-        anggota.setNama(input.nextLine());
-        anggotaKeluargaRepository.add(anggota);
+        makanan.setNama(input.nextLine());
+        System.out.print("Masukkan Deskripsi makanan:");
+        makanan.setDeskripsi(input.nextLine());
+        resepMakananRepository.add(makanan);
     }
 
-
-    public void editAnggotaKeluarga() {
-        System.out.print("Masukkan nama anda:");
-        input.nextLine();
-        String nama = input.nextLine();
-        anggotaKeluarga anggota = carinama(nama);
-        System.out.print("Masukkan nama baru anda:");
-        anggota.setNama(input.nextLine());
-        anggotaKeluargaRepository.edit(anggota);
-    }
-
-
-    public void hapusAnggota() {
-        System.out.print("Masukkan nama anda:");
+    @Override
+    public void editResepMakanan() {
+        System.out.print("Masukkan nama makan:");
         input.nextLine();
         String nama = input.nextLine();
-        anggotaKeluarga anggota = carinama(nama);
-        anggotaKeluargaRepository.remove(anggota.getId());
+        resepMakanan makanan = carinama(nama);
+        System.out.println("Masukan Nama Baru Makan : ");
+        makanan.setNama(input.nextLine());
+        System.out.println("Masukan Deskripsi Baru Makan : ");
+        makanan.setDeskripsi(input.nextLine());
+        resepMakananRepository.edit(makanan);
     }
 
-    resepMakanan carinama(String nama) {
-        resepMakanan resep = new resepMakanan();
+    @Override
+    public void hapusResep() {
+        System.out.print("Masukkan nama makan:");
+        input.nextLine();
+        String nama = input.nextLine();
+        resepMakanan makanan = carinama(nama);
+        resepMakananRepository.remove(makanan.getId());
+    }
+
+
+    private resepMakanan carinama(String nama) {
         ArrayList<resepMakanan> listResep = resepMakananRepository.getAll();
         for (resepMakanan i:listResep) {
-            if (nama == i.getNama()) {
-                resep = i;
+            if (Objects.equals(nama, i.getNama())) {
+                return i;
             }
         }
-        return resep;
+        return new resepMakanan();
+    }
+
+    @Override
+    public ArrayList<resepMakanan> getAll(){
+        return resepMakananRepository.getAll();
     }
 }

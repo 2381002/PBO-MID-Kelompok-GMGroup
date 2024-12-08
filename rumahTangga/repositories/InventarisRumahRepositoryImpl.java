@@ -3,60 +3,57 @@ package rumahTangga.repositories;
 import org.springframework.stereotype.Component;
 import rumahTangga.config.Database;
 import rumahTangga.entities.anggotaKeluarga;
+import rumahTangga.entities.inventarisRumah;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 @Component
-public class anggotaKeluargaRepositoryDbImpl implements anggotaKeluargaRepository {
+public class InventarisRumahRepositoryImpl implements InventarisRumahRepository {
+
     private Database database;
 
-    public anggotaKeluargaRepositoryDbImpl(Database database) {
+    public InventarisRumahRepositoryImpl(Database database) {
         this.database = database;
     }
 
     @Override
-    public ArrayList<anggotaKeluarga> getAll() {
+    public ArrayList<inventarisRumah> getAll() {
         Connection connection = database.getConnection();
-        String sqlStatement = "SELECT * FROM anggota_keluarga";
-        ArrayList<anggotaKeluarga> anggotaKeluargaList = new ArrayList<>();
+        String sqlStatement = "SELECT * FROM inventaris_rumah";
+        ArrayList<inventarisRumah> inventarisRumahArrayList = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                anggotaKeluarga anggota = new anggotaKeluarga();
+                inventarisRumah rumah = new inventarisRumah();
                 Integer id = resultSet.getInt(1);
                 String nama = resultSet.getString(2);
-                Integer keuangan = resultSet.getInt(3);
-                String kegiatan = resultSet.getString(4);
+                Integer jumlah= resultSet.getInt(3);
 
-                anggota.setId(id);
-                anggota.setNama(nama);
-                anggota.setKeuangan(keuangan);
-                anggota.setKegiatan(kegiatan);
-
-                anggotaKeluargaList.add(anggota);
+                rumah.setId(id);
+                rumah.setNama(nama);
+                rumah.setJumlah(jumlah);
+                inventarisRumahArrayList.add(rumah);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return anggotaKeluargaList;
+        return inventarisRumahArrayList;
     }
 
     @Override
-    public void add(anggotaKeluarga anggota) {
-        String sqlStatement = "INSERT INTO anggota_keluarga(nama_anggota, keuangan, kegiatan) values(?,?,?)";
+    public void add(inventarisRumah rumah) {
+        String sqlStatement = "INSERT INTO inventaris_rumah(nama, jumlah) values(?,?)";
         Connection conn = database.getConnection();
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sqlStatement);
-            preparedStatement.setString(1, anggota.getNama());
-            preparedStatement.setInt(2, anggota.getKeuangan());
-            preparedStatement.setString(3, anggota.getKegiatan());
+            preparedStatement.setString(1, rumah.getNama());
+            preparedStatement.setInt(2, rumah.getJumlah());
+
 
             int rowsEffected = preparedStatement.executeUpdate();
             if (rowsEffected > 0) {
@@ -68,9 +65,9 @@ public class anggotaKeluargaRepositoryDbImpl implements anggotaKeluargaRepositor
     }
 
     @Override
-    public Boolean remove(final Integer id) {
+    public Boolean remove(Integer id) {
 
-        String sqlStatement = "DELETE FROM anggota_keluarga WHERE id = ?";
+        String sqlStatement = "DELETE FROM inventaris_rumah WHERE id = ?";
         Connection conn = database.getConnection();
 
         try {
@@ -90,15 +87,14 @@ public class anggotaKeluargaRepositoryDbImpl implements anggotaKeluargaRepositor
     }
 
     @Override
-    public Boolean edit(anggotaKeluarga anggota) {
-        String sqlStatement = "UPDATE anggota_keluarga set nama_anggota = ?, keuangan = ?, kegiatan = ? WHERE id = ?";
+    public Boolean edit(inventarisRumah rumah) {
+        String sqlStatement = "UPDATE anggota_keluarga set nama = ?, jumlah = ? WHERE id = ?";
         Connection conn = database.getConnection();
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sqlStatement);
-            preparedStatement.setString(1, anggota.getNama());
-            preparedStatement.setInt(2, anggota.getKeuangan());
-            preparedStatement.setString(3, anggota.getKegiatan());
-            preparedStatement.setInt(4, anggota.getId());
+            preparedStatement.setString(1, rumah.getNama());
+            preparedStatement.setInt(2, rumah.getJumlah());
+            preparedStatement.setInt(3, rumah.getId());
 
             int rowsEffected = preparedStatement.executeUpdate();
             if (rowsEffected > 0) {
@@ -111,4 +107,5 @@ public class anggotaKeluargaRepositoryDbImpl implements anggotaKeluargaRepositor
             return false;
         }
     }
+
 }
