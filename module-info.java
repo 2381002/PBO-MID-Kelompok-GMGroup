@@ -4,6 +4,8 @@ module rumahTangga {
     requires spring.context;
     requires java.xml.crypto;
     requires org.slf4j;
+    requires javafx.fxml;
+    requires javafx.controls;
 
     opens rumahTangga;
     opens rumahTangga.entities;
