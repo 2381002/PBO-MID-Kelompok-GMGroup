@@ -1,8 +1,7 @@
 package rumahTangga.repositories;
 
-import org.springframework.stereotype.Component;
 import rumahTangga.config.Database;
-import rumahTangga.entities.RumahTangga;
+import rumahTangga.entities.anggotaKeluarga;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,43 +11,48 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-@Component
-public class RumahTanggaRepositoryDbImpl implements RumahTanggaRepository {
+public class anggotaKeluargaRepositoryDbImpl implements anggotaKeluargaRepository {
     private Database database;
 
-    public RumahTanggaRepositoryDbImpl(Database database) {
+    public anggotaKeluargaRepositoryDbImpl(Database database) {
         this.database = database;
     }
 
     @Override
-    public RumahTangga[] getAll() {
+    public ArrayList<anggotaKeluarga> getAll() {
         Connection connection = database.getConnection();
-        String sqlStatement = "SELECT * FROM todos";
-        List<RumahTangga> rumahTanggaList = new ArrayList<>();
+        String sqlStatement = "SELECT * FROM anggota_keluarga";
+        ArrayList<anggotaKeluarga> anggotaKeluargaList = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                RumahTangga rumahTangga = new RumahTangga();
+                anggotaKeluarga anggota = new anggotaKeluarga();
                 Integer id = resultSet.getInt(1);
-                String todo = resultSet.getString(2);
-                rumahTangga.setId(id);
-                rumahTangga.setTodo(todo);
-                rumahTanggaList.add(rumahTangga);
+                String nama = resultSet.getString(2);
+                Integer keuangan = resultSet.getInt(3);
+                String kegiatan = resultSet.getString(4);
+                anggota.setId(id);
+                anggota.setNama(nama);
+                anggota.setKeuangan(keuangan);
+                anggota.setKegiatan(kegiatan);
+                anggotaKeluargaList.add(anggota);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return rumahTanggaList.toArray(RumahTangga[]::new);
+        return anggotaKeluargaList;
     }
 
     @Override
-    public void add(final RumahTangga rumahTangga) {
-        String sqlStatement = "INSERT INTO todos(todo) values(?)";
+    public void add(anggotaKeluarga anggota) {
+        String sqlStatement = "INSERT INTO anggota_keluarga(nama_anggota, keuangan, kegiatan) values(?,?,?)";
         Connection conn = database.getConnection();
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sqlStatement);
-            preparedStatement.setString(1, rumahTangga.getTodo());
+            preparedStatement.setString(1, anggota.getNama());
+            preparedStatement.setInt(2, anggota.getKeuangan());
+            preparedStatement.setString(3, anggota.getKegiatan());
 
             int rowsEffected = preparedStatement.executeUpdate();
             if (rowsEffected > 0) {
@@ -61,9 +65,11 @@ public class RumahTanggaRepositoryDbImpl implements RumahTanggaRepository {
 
     @Override
     public Boolean remove(final Integer id) {
-        String sqlStatement = "DELETE FROM todos WHERE id = ?";
+        ArrayList<anggotaKeluarga> tmp=getAll();
+        Integer idAnggota = tmp.get(id).getId();
+        String sqlStatement = "DELETE FROM anggota_keluarga WHERE id = ?";
         Connection conn = database.getConnection();
-        var dbId = getDbId(id);
+        var dbId = idAnggota;
         if (dbId == null) {
             return false;
         }
@@ -83,28 +89,16 @@ public class RumahTanggaRepositoryDbImpl implements RumahTanggaRepository {
         }
     }
 
-    private Integer getDbId(final Integer id) {
-        RumahTangga[] rumahTanggas = getAll();
-        Long countElement = Arrays.stream(rumahTanggas).filter(Objects::nonNull).count();
-        if (countElement.intValue() == 0) {
-            return null;
-        }
-        var dbId = rumahTanggas[id - 1].getId();
-        return dbId;
-    }
-
     @Override
-    public Boolean edit(final RumahTangga rumahTangga) {
-        String sqlStatement = "UPDATE todos set todo = ? WHERE id = ?";
+    public Boolean edit(anggotaKeluarga anggota) {
+        String sqlStatement = "UPDATE anggota_keluarga set nama_anggota = ?, keuangan = ?, kegiatan = ? WHERE id = ?";
         Connection conn = database.getConnection();
-        var dbId = getDbId(rumahTangga.getId());
-        if (dbId == null) {
-            return false;
-        }
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sqlStatement);
-            preparedStatement.setString(1, rumahTangga.getTodo());
-            preparedStatement.setInt(2, dbId);
+            preparedStatement.setString(1, anggota.getNama());
+            preparedStatement.setInt(2, anggota.getKeuangan());
+            preparedStatement.setString(3, anggota.getKegiatan());
+            preparedStatement.setInt(4, anggota.getId());
 
             int rowsEffected = preparedStatement.executeUpdate();
             if (rowsEffected > 0) {

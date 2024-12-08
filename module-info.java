@@ -1,16 +1,14 @@
-module rumahTangga {
-    requires java.sql;
-    requires spring.beans;
+module PBO.MID.Kelompok.GMGroup {
     requires spring.context;
-    requires java.xml.crypto;
+    requires spring.beans;
+    requires java.sql;
     requires org.slf4j;
-    requires javafx.fxml;
-    requires javafx.controls;
 
     opens rumahTangga;
     opens rumahTangga.entities;
-    opens rumahTangga.repositories;
-    opens rumahTangga.services;
-    opens rumahTangga.views;
     opens rumahTangga.config;
+    opens rumahTangga.views;
+    opens rumahTangga.services;
+    opens rumahTangga.repositories;
+
 }

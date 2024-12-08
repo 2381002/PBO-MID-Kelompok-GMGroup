@@ -5,36 +5,35 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Database {
-    private String dbName;
-    private String user;
-    private String password;
-    private String host;
-    private String port;
+    private final String dbName;
+    private final String userName;
+    private final String password;
+    private final String host;
+    private final String port;
     private Connection connection;
 
-    public Database(String dbName, String user, String password, String host, String port) {
+
+    public Database(String dbName, String userName, String password, String host, String port) {
         this.dbName = dbName;
-        this.user = user;
+        this.userName = userName;
         this.password = password;
         this.host = host;
         this.port = port;
     }
 
-    public void setup() {
-        try {
-            // Load the MySQL JDBC driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            // Establish the connection
-            String url = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("MySQL JDBC Driver not found.", e);
-        } catch (SQLException e) {
-            throw new RuntimeException("Error connecting to the database.", e);
-        }
-    }
-
     public Connection getConnection() {
         return connection;
+    }
+
+    public void setup() {
+        String mysqlConnUrlTemplate = "jdbc:mysql://%s:%s/%s";
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(String.format(mysqlConnUrlTemplate, host, port, dbName), userName, password);
+            System.out.println("Database connected!");
+
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
