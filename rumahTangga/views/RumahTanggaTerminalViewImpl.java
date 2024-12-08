@@ -2,8 +2,9 @@ package rumahTangga.views;
 
 import org.springframework.stereotype.Component;
 import rumahTangga.entities.RumahTangga;
-import java.util.Scanner;
 import rumahTangga.services.RumahTanggaService;
+
+import java.util.Scanner;
 
 @Component
 public class RumahTanggaTerminalViewImpl implements RumahTanggaView {
@@ -54,11 +55,14 @@ public class RumahTanggaTerminalViewImpl implements RumahTanggaView {
         var number = input("Nomor yang dihapus (x jika batal)");
         if (number.equals("x")) {
             return; // batal
-        } else {
-            boolean success = rumahTangga Service.removeRumahTangga(Integer.valueOf(number));
+        }
+        try {
+            boolean success = rumahTanggaService.removeRumahTangga(Integer.valueOf(number));
             if (!success) {
                 System.out.println("Gagal menghapus rumah tangga: " + number);
             }
+        } catch (NumberFormatException e) {
+            System.out.println("Input tidak valid. Harap masukkan nomor yang benar.");
         }
     }
 
@@ -69,6 +73,7 @@ public class RumahTanggaTerminalViewImpl implements RumahTanggaView {
             return; // batal
         } else {
             rumahTanggaService.addRumahTangga(todo);
+            System.out.println("Berhasil menambahkan rumah tangga: " + todo);
         }
     }
 
@@ -82,11 +87,15 @@ public class RumahTanggaTerminalViewImpl implements RumahTanggaView {
         if (newTodo.equals("x")) {
             return;
         }
-        boolean isEditTodoSuccess = rumahTanggaService.editRumahTangga(Integer.valueOf(selectedTodo), newTodo);
-        if (isEditTodoSuccess) {
-            System.out.println("Berhasil mengedit rumah tangga");
-        } else {
-            System.out.println("Gagal mengedit rumah tangga");
+        try {
+            boolean isEditTodoSuccess = rumahTanggaService.editRumahTangga(Integer.valueOf(selectedTodo), newTodo);
+            if (isEditTodoSuccess) {
+                System.out.println("Berhasil mengedit rumah tangga");
+            } else {
+                System.out.println("Gagal mengedit rumah tangga");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Input tidak valid . Harap masukkan nomor yang benar.");
         }
     }
 
